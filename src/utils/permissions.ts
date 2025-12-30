@@ -1,6 +1,6 @@
 import { useAuthStore } from '@/stores/auth-store'
-import { PermissionValue } from '@/features/manage-role/types/permissions'
 
+interface PermissionValue {}
 export const hasPermission = (
   user: { id?: string; name?: string; permissions?: string[] } | null,
   permission: PermissionValue
@@ -12,7 +12,7 @@ export const hasPermission = (
     return false
   }
 
-  const hasPerm = user.permissions.includes(permission)
+  const hasPerm = user.permissions.includes(permission as any)
 
   console.log(
     `[Permission Check] User: ${user.name} | Permission: ${permission} | Granted: ${hasPerm}`,

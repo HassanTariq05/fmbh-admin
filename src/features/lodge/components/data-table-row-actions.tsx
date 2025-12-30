@@ -1,7 +1,7 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
-import { useNavigate } from '@tanstack/react-router'
+// import { useNavigate } from '@tanstack/react-router'
 import { type Row } from '@tanstack/react-table'
-import { Trash2, Pencil, Eye } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -25,11 +25,11 @@ export function DataTableRowActions<TData>({
 
   const { setOpen, setCurrentRow } = useLodges()
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
-  const handleViewLodge = (id: number) => {
-    navigate({ to: `/lodge/${id}` })
-  }
+  // const handleViewLodge = (id: number) => {
+  //   navigate({ to: `/lodge/${id}` })
+  // }
 
   return (
     <DropdownMenu modal={false}>
@@ -43,7 +43,7 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
-        <DropdownMenuItem
+        {/* <DropdownMenuItem
           onClick={() => {
             handleViewLodge(lodge?.id)
           }}
@@ -52,7 +52,7 @@ export function DataTableRowActions<TData>({
           <DropdownMenuShortcut>
             <Eye size={16} />
           </DropdownMenuShortcut>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <>
           <DropdownMenuItem

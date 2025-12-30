@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, X } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import {
   useCity,
   useCountries,
@@ -40,7 +40,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { Textarea } from '@/components/ui/textarea'
 import { type Lodge } from '../data/schema'
 
 type FormMutateDrawerProps = {
@@ -99,11 +98,7 @@ export function LodgesMutateDrawer({
     }
   }, [watchedCountry, form])
 
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
-  const [selectedCity, setSelectedCity] = useState<string | null>(null)
-
-  const [countryDropdownOpen, setCountryDropdownOpen] = useState(false)
-  const [cityDropdownOpen, setCityDropdownOpen] = useState(false)
+  const [selectedCountry] = useState<string | null>(null)
 
   const [countryKeyword, setCountryKeyword] = useState('')
   const [debouncedCountryKeyword, setDebouncedCountryKeyword] = useState('')
@@ -143,7 +138,7 @@ export function LodgesMutateDrawer({
     console.log('open: ', open)
     if (!lodge || !open) return
 
-    let lodgesData = lodge?.data
+    let lodgesData = lodge
 
     form.reset({
       title: lodgesData.lodge_name,
@@ -212,189 +207,196 @@ export function LodgesMutateDrawer({
           <SheetTitle>{isUpdate ? 'Update' : 'Create'} Lodge</SheetTitle>
         </SheetHeader>
 
-        <Form {...form}>
-          <form
-            id='forms-form'
-            onSubmit={form.handleSubmit(onSubmit)}
-            className='flex-1 overflow-y-auto px-4 py-6'
-          >
-            <div className='mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2'>
-              <FormField
-                control={form.control}
-                name='title'
-                render={({ field }) => (
-                  <FormItem className='md:col-span-2'>
-                    <FormLabel>Lodge Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder='Enter lodge name' />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        {isUpdate && isLodgeLoading ? (
+          // Show loader while fetching lodge data
+          <div className='flex flex-1 items-center justify-center py-10'>
+            <Loader2 className='h-8 w-8 animate-spin' />
+          </div>
+        ) : (
+          <Form {...form}>
+            <form
+              id='forms-form'
+              onSubmit={form.handleSubmit(onSubmit)}
+              className='flex-1 overflow-y-auto px-4 py-6'
+            >
+              <div className='mx-auto grid max-w-4xl grid-cols-1 gap-6 md:grid-cols-2'>
+                <FormField
+                  control={form.control}
+                  name='title'
+                  render={({ field }) => (
+                    <FormItem className='md:col-span-2'>
+                      <FormLabel>Lodge Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Enter lodge name' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='lodgeNumber'
-                render={({ field }) => (
-                  <FormItem className='md:col-span-2'>
-                    <FormLabel>Lodge Number</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder='Enter lodge number' />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name='lodgeNumber'
+                  render={({ field }) => (
+                    <FormItem className='md:col-span-2'>
+                      <FormLabel>Lodge Number</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Enter lodge number' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Address - full width */}
-              <FormField
-                control={form.control}
-                name='address'
-                render={({ field }) => (
-                  <FormItem className='md:col-span-2'>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder='Enter address' />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Address - full width */}
+                <FormField
+                  control={form.control}
+                  name='address'
+                  render={({ field }) => (
+                    <FormItem className='md:col-span-2'>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Enter address' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='country'
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <div className='relative'>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant='outline'
-                              role='combobox'
-                              className='w-full justify-between'
-                            >
-                              {form.getValues('country') ||
-                                (loadingCountries
-                                  ? 'Loading...'
-                                  : 'Select country')}
-                            </Button>
-                          </FormControl>
-                        </DropdownMenuTrigger>
+                <FormField
+                  control={form.control}
+                  name='country'
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <div className='relative'>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant='outline'
+                                role='combobox'
+                                className='w-full justify-between'
+                              >
+                                {form.getValues('country') ||
+                                  (loadingCountries
+                                    ? 'Loading...'
+                                    : 'Select country')}
+                              </Button>
+                            </FormControl>
+                          </DropdownMenuTrigger>
 
-                        <DropdownMenuContent className='w-full p-0'>
-                          <Command>
-                            <CommandInput
-                              placeholder='Search country...'
-                              value={countryKeyword}
-                              onValueChange={setCountryKeyword}
-                            />
-                            <CommandList>
-                              <CommandEmpty>No countries found.</CommandEmpty>
-                              {countries?.map((country: any) => (
-                                <CommandItem
-                                  key={country.id}
-                                  onSelect={() => {
-                                    form.setValue('country', country.title)
-                                    form.setValue('city', '') // Reset city
-                                    form.trigger('country')
-                                  }}
-                                >
-                                  {country.title}
-                                </CommandItem>
-                              ))}
-                            </CommandList>
-                          </Command>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    <FormMessage />
-                    {/* Hidden input to ensure field is registered */}
-                    <input type='hidden' {...form.register('country')} />
-                  </FormItem>
-                )}
-              />
+                          <DropdownMenuContent className='w-full p-0'>
+                            <Command>
+                              <CommandInput
+                                placeholder='Search country...'
+                                value={countryKeyword}
+                                onValueChange={setCountryKeyword}
+                              />
+                              <CommandList>
+                                <CommandEmpty>No countries found.</CommandEmpty>
+                                {countries?.map((country: any) => (
+                                  <CommandItem
+                                    key={country.id}
+                                    onSelect={() => {
+                                      form.setValue('country', country.title)
+                                      form.setValue('city', '') // Reset city
+                                      form.trigger('country')
+                                    }}
+                                  >
+                                    {country.title}
+                                  </CommandItem>
+                                ))}
+                              </CommandList>
+                            </Command>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <FormMessage />
+                      {/* Hidden input to ensure field is registered */}
+                      <input type='hidden' {...form.register('country')} />
+                    </FormItem>
+                  )}
+                />
 
-              {/* City Dropdown */}
-              <FormField
-                control={form.control}
-                name='city'
-                render={() => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <div className='relative'>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant='outline'
-                              role='combobox'
-                              disabled={!watchedCountry}
-                              className='w-full justify-between'
-                            >
-                              {form.getValues('city') ||
-                                (loadingCities
-                                  ? 'Loading...'
-                                  : watchedCountry
-                                    ? 'Select city'
-                                    : 'Select country first')}
-                            </Button>
-                          </FormControl>
-                        </DropdownMenuTrigger>
+                {/* City Dropdown */}
+                <FormField
+                  control={form.control}
+                  name='city'
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>City</FormLabel>
+                      <div className='relative'>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant='outline'
+                                role='combobox'
+                                disabled={!watchedCountry}
+                                className='w-full justify-between'
+                              >
+                                {form.getValues('city') ||
+                                  (loadingCities
+                                    ? 'Loading...'
+                                    : watchedCountry
+                                      ? 'Select city'
+                                      : 'Select country first')}
+                              </Button>
+                            </FormControl>
+                          </DropdownMenuTrigger>
 
-                        <DropdownMenuContent className='w-full p-0'>
-                          <Command>
-                            <CommandInput
-                              placeholder='Search city...'
-                              value={cityKeyword}
-                              onValueChange={setCityKeyword}
-                            />
-                            <CommandList>
-                              <CommandEmpty>No cities found.</CommandEmpty>
-                              {cities?.map((city: any) => (
-                                <CommandItem
-                                  key={city.id}
-                                  onSelect={() => {
-                                    form.setValue('city', city.title)
-                                    form.trigger('city')
-                                  }}
-                                >
-                                  {city.title}
-                                </CommandItem>
-                              ))}
-                            </CommandList>
-                          </Command>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    <FormMessage />
-                    <input type='hidden' {...form.register('city')} />
-                  </FormItem>
-                )}
-              />
+                          <DropdownMenuContent className='w-full p-0'>
+                            <Command>
+                              <CommandInput
+                                placeholder='Search city...'
+                                value={cityKeyword}
+                                onValueChange={setCityKeyword}
+                              />
+                              <CommandList>
+                                <CommandEmpty>No cities found.</CommandEmpty>
+                                {cities?.map((city: any) => (
+                                  <CommandItem
+                                    key={city.id}
+                                    onSelect={() => {
+                                      form.setValue('city', city.title)
+                                      form.trigger('city')
+                                    }}
+                                  >
+                                    {city.title}
+                                  </CommandItem>
+                                ))}
+                              </CommandList>
+                            </Command>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                      <FormMessage />
+                      <input type='hidden' {...form.register('city')} />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name='meetingTime'
-                render={({ field }) => (
-                  <FormItem className='md:col-span-2'>
-                    <FormLabel>Meeting Time</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder='e.g., 2nd Tuesday at 7:30 PM'
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </form>
-        </Form>
+                <FormField
+                  control={form.control}
+                  name='meetingTime'
+                  render={({ field }) => (
+                    <FormItem className='md:col-span-2'>
+                      <FormLabel>Meeting Time</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder='e.g., 2nd Tuesday at 7:30 PM'
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </form>
+          </Form>
+        )}
 
         <SheetFooter className='mt-1 gap-2 border-t pt-4'>
           <SheetClose asChild>

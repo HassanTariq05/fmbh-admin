@@ -37,7 +37,7 @@ export const useLodgeService = () => {
 
   const getById = async (id: string): Promise<LodgeGeneric> => {
     const { data } = await apiClient.get(`/lodge/${id}`)
-    return data
+    return data.data
   }
 
   const create = async (payload: CreateLodgePayload): Promise<Lodge> => {
