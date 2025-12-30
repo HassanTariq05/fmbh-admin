@@ -32,7 +32,7 @@ export const lodgeColumns: ColumnDef<any>[] = [
   {
     accessorKey: 'title',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Title' />
+      <DataTableColumnHeader column={column} title='Lodge Name' />
     ),
     cell: ({ row }) => (
       <LongText className='max-w-66'>{row.getValue('title')}</LongText>
@@ -43,11 +43,21 @@ export const lodgeColumns: ColumnDef<any>[] = [
   {
     accessorKey: 'desc',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title='Description' />
+      <DataTableColumnHeader column={column} title='Address' />
     ),
     meta: { className: 'ps-1', tdClassName: 'ps-4' },
     cell: ({ row }) => {
       return <LongText className='max-w-116'>{row.getValue('desc')}</LongText>
+    },
+  },
+  {
+    accessorKey: 'extra',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title='Meeting Time' />
+    ),
+    meta: { className: 'ps-1', tdClassName: 'ps-4' },
+    cell: ({ row }) => {
+      return <LongText className='max-w-116'>{row.getValue('extra')}</LongText>
     },
   },
   {

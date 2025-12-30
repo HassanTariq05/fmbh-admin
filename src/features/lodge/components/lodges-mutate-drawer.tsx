@@ -56,6 +56,23 @@ const formSchema = z.object({
   lodgeNumber: z
     .string()
     .min(1, 'Lodge number must be at least 1 number long.'),
+  latitude: z
+    .string()
+    .min(1, 'Latitude is required')
+    .transform((val) => parseFloat(val))
+    .refine((val) => !isNaN(val) && val >= -90 && val <= 90, {
+      message: 'Latitude must be a number between -90 and 90',
+    })
+    .optional(),
+
+  longitude: z
+    .string()
+    .min(1, 'Longitude is required')
+    .transform((val) => parseFloat(val))
+    .refine((val) => !isNaN(val) && val >= -180 && val <= 180, {
+      message: 'Longitude must be a number between -180 and 180',
+    })
+    .optional(),
   address: z
     .string()
     .min(1, 'Address is required.')
@@ -68,7 +85,6 @@ const formSchema = z.object({
   city: z.string().min(1, 'City is required.'),
   country: z.string().min(1, 'Country is required.'),
 })
-type FormForm = z.infer<typeof formSchema>
 
 export function LodgesMutateDrawer({
   open,
@@ -77,7 +93,7 @@ export function LodgesMutateDrawer({
 }: FormMutateDrawerProps) {
   const isUpdate = !!currentRow
 
-  const form = useForm<FormForm>({
+  const form = useForm<any>({
     resolver: zodResolver(formSchema),
     defaultValues: currentRow ?? {
       title: '',
@@ -86,6 +102,8 @@ export function LodgesMutateDrawer({
       meetingTime: '',
       city: '',
       country: '',
+      latitude: undefined,
+      longitude: undefined,
     },
   })
 
@@ -147,6 +165,8 @@ export function LodgesMutateDrawer({
       address: lodgesData.address,
       city: lodgesData.city,
       country: lodgesData.country,
+      latitude: lodgesData.latitude,
+      longitude: lodgesData.longitude,
     })
   }, [lodge, open])
 
@@ -165,7 +185,7 @@ export function LodgesMutateDrawer({
   const createFormMutation = useCreateLodge()
   const updateFormMutation = useUpdateLodge()
 
-  const onSubmit = (data: FormForm) => {
+  const onSubmit = (data: any) => {
     console.log(data)
     if (isUpdate) {
       updateFormMutation.mutate({
@@ -177,6 +197,8 @@ export function LodgesMutateDrawer({
           country: data?.country,
           address: data?.address,
           meeting_time: data?.meetingTime,
+          latitude: data?.latitude,
+          longitude: data?.longitude,
         },
       })
     } else {
@@ -187,6 +209,8 @@ export function LodgesMutateDrawer({
         country: data?.country,
         address: data?.address,
         meeting_time: data?.meetingTime,
+        latitude: data?.latitude,
+        longitude: data?.longitude,
       })
     }
 
@@ -373,6 +397,33 @@ export function LodgesMutateDrawer({
                       </div>
                       <FormMessage />
                       <input type='hidden' {...form.register('city')} />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='latitude'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Latitude</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Enter latitude' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name='longitude'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Longitude</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Enter longitude' />
+                      </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />

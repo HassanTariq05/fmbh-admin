@@ -15,6 +15,8 @@ export interface LodgeGeneric {
   address: string
   city: string
   country: string
+  latitude?: number
+  longitude?: number
 }
 
 export type CreateLodgePayload = Omit<LodgeGeneric, 'id'>
