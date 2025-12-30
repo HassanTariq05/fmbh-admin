@@ -1,15 +1,11 @@
 // import { Logo } from '@/assets/logo'
-import DarkModeLogo from '@/assets/total-quality-app-logo-dark.png'
-import LightModeLogo from '@/assets/total-quality-app-logo-light.png'
-import { useTheme } from '@/context/theme-provider'
+import Logo from '@/assets/freemason-resource.svg'
 
 type AuthLayoutProps = {
   children: React.ReactNode
 }
 
 export function AuthLayout({ children }: AuthLayoutProps) {
-  const { theme } = useTheme()
-
   return (
     <div className='container grid h-svh max-w-none items-center justify-center'>
       <div className='mx-auto flex w-full flex-col justify-center space-y-2 py-8 sm:w-[480px] sm:p-8'>
@@ -24,7 +20,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
             }}
           >
             <img
-              src={theme === 'dark' ? DarkModeLogo : LightModeLogo}
+              src={Logo}
               alt='Freemason Resource App Logo'
               style={{ height: '52px', width: 'auto' }}
             />

@@ -2,12 +2,8 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useNavigate } from '@tanstack/react-router'
-import { RegisterUserPayload } from '@/services/auth-services/auth-services'
-import { toast } from 'sonner'
-import { useAuthStore } from '@/stores/auth-store'
 import { cn } from '@/lib/utils'
-import { useAuthRegister } from '@/hooks/use-auth'
+// import { useAuthRegister } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -47,8 +43,8 @@ export function SignUpForm({
   ...props
 }: React.HTMLAttributes<HTMLFormElement>) {
   const [isLoading, setIsLoading] = useState(false)
-  const { auth } = useAuthStore()
-  const navigate = useNavigate()
+  // const { auth } = useAuthStore()
+  // const navigate = useNavigate()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,34 +56,34 @@ export function SignUpForm({
     },
   })
 
-  const registerMutation = useAuthRegister()
+  // const registerMutation = useAuthRegister()
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  function onSubmit() {
     setIsLoading(true)
-    const values: RegisterUserPayload = {
-      name: data?.fullName,
-      email: data.email,
-      password: data.password,
-      // organisationId: '02ab3cf8-67df-426a-abae-6439a01bf1ae', // for local db
-      organisationId: '34713401-bff0-4a9c-ba1f-36fe00b8dd09', //for remote db
-    }
+    // const values: RegisterUserPayload = {
+    //   name: data?.fullName,
+    //   email: data.email,
+    //   password: data.password,
+    //   // organisationId: '02ab3cf8-67df-426a-abae-6439a01bf1ae', // for local db
+    //   organisationId: '34713401-bff0-4a9c-ba1f-36fe00b8dd09', //for remote db
+    // }
 
-    registerMutation.mutate(values, {
-      onSuccess: (res: any) => {
-        auth.setUser(res.user)
-        auth.setAccessToken(res.token)
+    // registerMutation.mutate(values, {
+    //   onSuccess: (res: any) => {
+    //     auth.setUser(res.user)
+    //     auth.setAccessToken(res.token)
 
-        toast.success(`Welcome, ${res.user.name}!`)
+    //     toast.success(`Welcome, ${res.user.name}!`)
 
-        const target = '/'
-        navigate({ to: target, replace: true })
-        setIsLoading(false)
-      },
-      onError: () => {
-        setIsLoading(false)
-        toast.error('Could not register. Try Again!')
-      },
-    })
+    //     const target = '/'
+    //     navigate({ to: target, replace: true })
+    //     setIsLoading(false)
+    //   },
+    //   onError: () => {
+    //     setIsLoading(false)
+    //     toast.error('Could not register. Try Again!')
+    //   },
+    // })
   }
 
   return (
