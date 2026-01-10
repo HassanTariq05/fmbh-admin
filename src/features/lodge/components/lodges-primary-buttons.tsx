@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Filter, Plus, X } from 'lucide-react'
 import { useCity, useCountries } from '@/hooks/use-lodges'
 import { Button } from '@/components/ui/button'
 import {
@@ -70,6 +70,7 @@ export function LodgesPrimaryButtons({
   return (
     <div className='flex items-center gap-2'>
       {/* Country Dropdown */}
+      <Filter size={18} />
       <div className='relative flex-1'>
         <DropdownMenu
           open={countryDropdownOpen}

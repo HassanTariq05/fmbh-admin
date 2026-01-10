@@ -1,4 +1,4 @@
-import { Command, House } from 'lucide-react'
+import { Building2, Command, Flag, House } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
@@ -22,6 +22,16 @@ export const sidebarData: SidebarData = {
           title: 'Lodges',
           url: '/lodges',
           icon: House,
+        },
+        {
+          title: 'Countries',
+          url: '/countries',
+          icon: Flag,
+        },
+        {
+          title: 'Cities',
+          url: '/cities',
+          icon: Building2,
         },
         // {
         //   title: 'Dashboard',
