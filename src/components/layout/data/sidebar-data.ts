@@ -1,4 +1,4 @@
-import { Building2, Command, Flag, House } from 'lucide-react'
+import { Building2, CalendarDays, Command, Flag, House } from 'lucide-react'
 import { type SidebarData } from '../types'
 
 export const sidebarData: SidebarData = {
@@ -22,6 +22,11 @@ export const sidebarData: SidebarData = {
           title: 'Lodges',
           url: '/lodges',
           icon: House,
+        },
+        {
+          title: 'Events',
+          url: '/events',
+          icon: CalendarDays,
         },
         {
           title: 'Countries',

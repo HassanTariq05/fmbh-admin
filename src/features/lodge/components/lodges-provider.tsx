@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import useDialogState from '@/hooks/use-dialog-state'
 import { type Lodge } from '../data/schema'
 
-type LodgesDialogType = 'create' | 'update' | 'delete' | 'edit'
+type LodgesDialogType = 'create' | 'update' | 'delete' | 'edit' | 'upload-csv'
 
 type LodgesContextType = {
   open: LodgesDialogType | null

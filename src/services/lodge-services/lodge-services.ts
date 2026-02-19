@@ -47,6 +47,21 @@ export const useLodgeService = () => {
     return data
   }
 
+  const uploadCsv = async (
+    file: File
+  ): Promise<{ success: boolean; message: string }> => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const { data } = await apiClient.post('/lodge/upload-csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+
+    return data
+  }
+
   const update = async (
     id: string,
     payload: UpdateLodgePayload
@@ -59,5 +74,23 @@ export const useLodgeService = () => {
     await apiClient.delete(`/lodge/${id}`)
   }
 
-  return { search, getById, create, update, remove }
+  const downloadCsv = async (): Promise<void> => {
+    const response = await apiClient.get('/lodge/download-csv', {
+      responseType: 'blob', // VERY IMPORTANT
+    })
+
+    const blob = new Blob([response.data], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'lodges.csv')
+    document.body.appendChild(link)
+    link.click()
+
+    link.remove()
+    window.URL.revokeObjectURL(url)
+  }
+
+  return { search, getById, create, update, remove, uploadCsv, downloadCsv }
 }

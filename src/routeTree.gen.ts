@@ -22,6 +22,7 @@ import { Route as authSignInRouteImport } from './routes/(auth)/sign-in'
 import { Route as authOtpRouteImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedLodgesRouteRouteImport } from './routes/_authenticated/lodges/route'
+import { Route as AuthenticatedEventsRouteRouteImport } from './routes/_authenticated/events/route'
 import { Route as AuthenticatedCountriesRouteRouteImport } from './routes/_authenticated/countries/route'
 import { Route as AuthenticatedCitiesRouteRouteImport } from './routes/_authenticated/cities/route'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
@@ -92,6 +93,12 @@ const AuthenticatedLodgesRouteRoute =
     path: '/lodges',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedEventsRouteRoute =
+  AuthenticatedEventsRouteRouteImport.update({
+    id: '/events',
+    path: '/events',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedCountriesRouteRoute =
   AuthenticatedCountriesRouteRouteImport.update({
     id: '/countries',
@@ -119,6 +126,7 @@ const AuthenticatedErrorsErrorRoute =
 export interface FileRoutesByFullPath {
   '/cities': typeof AuthenticatedCitiesRouteRoute
   '/countries': typeof AuthenticatedCountriesRouteRoute
+  '/events': typeof AuthenticatedEventsRouteRoute
   '/lodges': typeof AuthenticatedLodgesRouteRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -137,6 +145,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/cities': typeof AuthenticatedCitiesRouteRoute
   '/countries': typeof AuthenticatedCountriesRouteRoute
+  '/events': typeof AuthenticatedEventsRouteRoute
   '/lodges': typeof AuthenticatedLodgesRouteRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
@@ -157,6 +166,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/_authenticated/cities': typeof AuthenticatedCitiesRouteRoute
   '/_authenticated/countries': typeof AuthenticatedCountriesRouteRoute
+  '/_authenticated/events': typeof AuthenticatedEventsRouteRoute
   '/_authenticated/lodges': typeof AuthenticatedLodgesRouteRoute
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/otp': typeof authOtpRoute
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/cities'
     | '/countries'
+    | '/events'
     | '/lodges'
     | '/forgot-password'
     | '/otp'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
   to:
     | '/cities'
     | '/countries'
+    | '/events'
     | '/lodges'
     | '/forgot-password'
     | '/otp'
@@ -214,6 +226,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/_authenticated/cities'
     | '/_authenticated/countries'
+    | '/_authenticated/events'
     | '/_authenticated/lodges'
     | '/(auth)/forgot-password'
     | '/(auth)/otp'
@@ -337,6 +350,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLodgesRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/events': {
+      id: '/_authenticated/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AuthenticatedEventsRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/countries': {
       id: '/_authenticated/countries'
       path: '/countries'
@@ -371,6 +391,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCitiesRouteRoute: typeof AuthenticatedCitiesRouteRoute
   AuthenticatedCountriesRouteRoute: typeof AuthenticatedCountriesRouteRoute
+  AuthenticatedEventsRouteRoute: typeof AuthenticatedEventsRouteRoute
   AuthenticatedLodgesRouteRoute: typeof AuthenticatedLodgesRouteRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
@@ -380,6 +401,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCitiesRouteRoute: AuthenticatedCitiesRouteRoute,
   AuthenticatedCountriesRouteRoute: AuthenticatedCountriesRouteRoute,
+  AuthenticatedEventsRouteRoute: AuthenticatedEventsRouteRoute,
   AuthenticatedLodgesRouteRoute: AuthenticatedLodgesRouteRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,

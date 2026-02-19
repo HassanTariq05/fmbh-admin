@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Download, Filter, Plus, Upload, X } from 'lucide-react'
-import { useCity, useCountries, useDownloadLodgeCsv } from '@/hooks/use-lodges'
+import { Filter, Plus, X } from 'lucide-react'
+import { useCity, useCountries, useLodges } from '@/hooks/use-lodges'
 import { Button } from '@/components/ui/button'
 import {
   Command,
@@ -16,31 +16,61 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useLodges } from './lodges-provider'
+import { useEvents } from './events-provider'
 
 interface Props {
+  selectedLodge: string | null
+  setSelectedLodge: (value: string | null) => void
+  selectedStatus: string | null
+  setSelectedStatus: (value: string | null) => void
   selectedCountry: string | null
   setSelectedCountry: (value: string | null) => void
   selectedCity: string | null
   setSelectedCity: (value: string | null) => void
 }
 
-export function LodgesPrimaryButtons({
+const statusesData = [
+  { id: 1, title: 'Draft' },
+  { id: 2, title: 'Published' },
+  { id: 3, title: 'Cancelled' },
+  { id: 4, title: 'Completed' },
+]
+
+export function EventsPrimaryButtons({
+  selectedLodge,
+  setSelectedLodge,
+  selectedStatus,
+  setSelectedStatus,
   selectedCity,
   setSelectedCity,
   selectedCountry,
   setSelectedCountry,
 }: Props) {
-  const { setOpen } = useLodges()
+  const { setOpen } = useEvents()
 
+  const [lodgeDropdownOpen, setLodgeDropdownOpen] = useState(false)
+  const [statusDropdownOpen, setStatusDropdownOpen] = useState(false)
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false)
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false)
+
+  const [lodgeKeyword, setLodgeKeyword] = useState('')
+  const [debouncedLodgeKeyword, setDebouncedLodgeKeyword] = useState('')
+
+  const [statusKeyword, setStatusKeyword] = useState('')
 
   const [countryKeyword, setCountryKeyword] = useState('')
   const [debouncedCountryKeyword, setDebouncedCountryKeyword] = useState('')
 
   const [cityKeyword, setCityKeyword] = useState('')
   const [debouncedCityKeyword, setDebouncedCityKeyword] = useState('')
+
+  useEffect(() => {
+    const handler = setTimeout(
+      () => setDebouncedLodgeKeyword(lodgeKeyword),
+      500
+    )
+    return () => clearTimeout(handler)
+  }, [lodgeKeyword])
 
   useEffect(() => {
     const handler = setTimeout(
@@ -61,18 +91,22 @@ export function LodgesPrimaryButtons({
     ''
   )
 
+  const { data: lodges, isLoading: loadingLodges }: any = useLodges(
+    debouncedLodgeKeyword,
+    selectedCountry || '',
+    selectedCity || ''
+  )
+
   const { data: cities, isLoading: loadingCities }: any = useCity(
     debouncedCityKeyword,
     selectedCountry || '',
     ''
   )
 
-  const { mutate: downloadCsv, isPending } = useDownloadLodgeCsv()
-
   return (
     <div className='flex items-center gap-2'>
-      {/* Country Dropdown */}
       <Filter size={18} />
+
       <div className='relative flex-1'>
         <DropdownMenu
           open={countryDropdownOpen}
@@ -113,7 +147,6 @@ export function LodgesPrimaryButtons({
         </DropdownMenu>
       </div>
 
-      {/* Country X icon outside */}
       {selectedCountry && (
         <X
           size={16}
@@ -127,7 +160,6 @@ export function LodgesPrimaryButtons({
         />
       )}
 
-      {/* City Dropdown */}
       <div className='relative flex-1'>
         <DropdownMenu
           open={cityDropdownOpen}
@@ -169,7 +201,6 @@ export function LodgesPrimaryButtons({
         </DropdownMenu>
       </div>
 
-      {/* City X icon outside */}
       {selectedCity && (
         <X
           size={16}
@@ -181,17 +212,100 @@ export function LodgesPrimaryButtons({
         />
       )}
 
-      {/* Create Lodge Button */}
+      <div className='relative flex-1'>
+        <DropdownMenu
+          open={lodgeDropdownOpen}
+          onOpenChange={setLodgeDropdownOpen}
+        >
+          <DropdownMenuTrigger asChild>
+            <Button variant='outline' className='w-full'>
+              {selectedLodge || (loadingLodges ? 'Loading...' : 'Select Lodge')}
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className='w-full'>
+            <Command>
+              <CommandInput
+                placeholder='Search lodge...'
+                value={lodgeKeyword}
+                onValueChange={setLodgeKeyword}
+              />
+              <CommandList>
+                <CommandEmpty>No lodges found.</CommandEmpty>
+                {lodges?.map((lodge: any) => (
+                  <CommandItem
+                    key={lodge.id}
+                    onSelect={() => {
+                      setSelectedLodge(lodge.title)
+                    }}
+                  >
+                    {lodge.title}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {selectedLodge && (
+        <X
+          size={16}
+          className='cursor-pointer'
+          onClick={() => {
+            setSelectedLodge('')
+          }}
+        />
+      )}
+
+      <div className='relative flex-1'>
+        <DropdownMenu
+          open={statusDropdownOpen}
+          onOpenChange={setStatusDropdownOpen}
+        >
+          <DropdownMenuTrigger asChild>
+            <Button variant='outline' className='w-full'>
+              {selectedStatus || 'Select Status'}
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent className='w-full'>
+            <Command>
+              <CommandInput
+                placeholder='Search status...'
+                value={statusKeyword}
+                onValueChange={setStatusKeyword}
+              />
+              <CommandList>
+                <CommandEmpty>No statuses found.</CommandEmpty>
+                {statusesData?.map((status: any) => (
+                  <CommandItem
+                    key={status.id}
+                    onSelect={() => {
+                      setSelectedStatus(status.title)
+                    }}
+                  >
+                    {status.title}
+                  </CommandItem>
+                ))}
+              </CommandList>
+            </Command>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {selectedStatus && (
+        <X
+          size={16}
+          className='cursor-pointer'
+          onClick={() => {
+            setSelectedStatus('')
+          }}
+        />
+      )}
+
       <Button className='space-x-1' onClick={() => setOpen('create')}>
-        <span>Create Lodge</span> <Plus size={18} />
-      </Button>
-
-      <Button className='space-x-1' onClick={() => setOpen('upload-csv')}>
-        <span>Upload CSV</span> <Upload size={18} />
-      </Button>
-
-      <Button onClick={() => downloadCsv()} disabled={isPending}>
-        {isPending ? 'Downloading...' : 'Download CSV'} <Download />
+        <span>Create Event</span> <Plus size={18} />
       </Button>
     </div>
   )

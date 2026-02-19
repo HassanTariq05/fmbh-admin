@@ -1,35 +1,35 @@
-import { useDeleteLodge } from '@/hooks/use-lodges'
+import { useDeleteEvent } from '@/hooks/use-events'
 import { ConfirmDialog } from '@/components/confirm-dialog'
-import { LodgesMutateDrawer } from './lodges-mutate-drawer'
-import { useLodges } from './lodges-provider'
-import { UploadLodgesDialog } from './upload-lodges-dialog'
+import { EventsMutateDrawer } from './events-mutate-drawer'
+import { useEvents } from './events-provider'
+import { UploadEventsDialog } from './upload-events-dialog'
 
-export function LodgesDialogs() {
-  const { open, setOpen, currentRow, setCurrentRow } = useLodges()
+export function EventsDialogs() {
+  const { open, setOpen, currentRow, setCurrentRow } = useEvents()
 
-  const deleteLodge = useDeleteLodge()
+  const deleteEvent = useDeleteEvent()
 
-  const handleDeleteLodge = (id: number) => {
-    deleteLodge.mutate(id.toString())
+  const handleDeleteEvent = (id: number) => {
+    deleteEvent.mutate(id.toString())
     console.log(id)
   }
 
   return (
     <>
-      <LodgesMutateDrawer
-        key='create-lodge'
+      <EventsMutateDrawer
+        key='create-event'
         open={open === 'create'}
         onOpenChange={() => setOpen('create')}
       />
 
-      <UploadLodgesDialog
+      <UploadEventsDialog
         open={open === 'upload-csv'}
         onOpenChange={() => setOpen('upload-csv')}
       />
 
       {currentRow && (
         <>
-          <LodgesMutateDrawer
+          <EventsMutateDrawer
             key={`update-${currentRow.id}`}
             open={open === 'update'}
             onOpenChange={() => {
@@ -42,7 +42,7 @@ export function LodgesDialogs() {
           />
 
           <ConfirmDialog
-            key='lodge-delete'
+            key='event-delete'
             destructive
             open={open === 'delete'}
             onOpenChange={() => {
@@ -56,13 +56,13 @@ export function LodgesDialogs() {
               setTimeout(() => {
                 setCurrentRow(null)
               }, 500)
-              handleDeleteLodge(currentRow?.id)
+              handleDeleteEvent(currentRow?.id)
             }}
             className='max-w-md'
-            title={`Delete this Lodge: ${currentRow.title} ?`}
+            title={`Delete this Event: ${currentRow.title} ?`}
             desc={
               <>
-                You are about to delete a lodge{' '}
+                You are about to delete a event{' '}
                 <strong>{currentRow.title}</strong>. <br />
                 This action cannot be undone.
               </>

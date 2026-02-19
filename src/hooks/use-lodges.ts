@@ -24,6 +24,20 @@ export const useLodges = (keyword = '', keyword1 = '', keyword2 = '') => {
   })
 }
 
+export const useDownloadLodgeCsv = () => {
+  const { downloadCsv } = useLodgeService()
+
+  return useMutation({
+    mutationFn: downloadCsv,
+    onSuccess: () => {
+      toast.success('Lodges CSV downloaded successfully!')
+    },
+    onError: () => {
+      toast.error('Failed to download CSV.')
+    },
+  })
+}
+
 export const useCountries = (keyword = '', keyword1 = '', keyword2 = '') => {
   const { search } = useLodgeService()
 
@@ -93,6 +107,22 @@ export const useUpdateLodge = () => {
     },
     onError: () => {
       toast.error('Failed to update lodge.')
+    },
+  })
+}
+
+export const useUploadLodgeCsv = () => {
+  const { uploadCsv } = useLodgeService()
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (file: File) => uploadCsv(file),
+    onSuccess: (data) => {
+      toast.success(data?.message || 'CSV uploaded successfully!')
+      queryClient.invalidateQueries({ queryKey: lodgeQueryKeys.all1 })
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to upload CSV.')
     },
   })
 }
